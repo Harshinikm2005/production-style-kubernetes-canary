@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.stable.name }}
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.stable.replicas }}
+  selector:
+    matchLabels:
+      app: canary-demo
+      version: {{ .Values.stable.version }}
+  template:
+    metadata:
+      labels:
+        app: canary-demo
+        version: {{ .Values.stable.version }}
+    spec:
+      containers:
+        - name: stable
+          image: {{ .Values.stable.image }}
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 5000
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 2
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 5000
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 3

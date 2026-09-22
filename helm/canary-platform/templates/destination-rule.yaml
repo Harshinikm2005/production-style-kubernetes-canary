@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: canary-destination
+  namespace: {{ .Values.namespace }}
+spec:
+  host: {{ .Values.service.name }}.{{ .Values.namespace }}.svc.cluster.local
+  subsets:
+    - name: stable
+      labels:
+        version: stable
+
+    - name: canary
+      labels:
+        version: canary

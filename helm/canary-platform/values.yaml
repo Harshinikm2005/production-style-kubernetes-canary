@@ -1,0 +1,24 @@
+nameOverride: ""
+fullnameOverride: ""
+namespace: canary-demo
+
+stable:
+  name: stable-v1
+  image: canary-stable:v1
+  replicas: 2
+  version: stable
+
+canary:
+  name: canary-v2
+  image: canary-canary:v2
+  replicas: 2
+  version: canary
+
+service:
+  name: app-service
+  port: 80
+  targetPort: 5000
+
+traffic:
+  stable: 50
+  canary: 50

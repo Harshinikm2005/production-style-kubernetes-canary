@@ -1,0 +1,54 @@
+{
+  "dashboard": {
+    "title": "Production Canary Deployment",
+    "tags": ["kubernetes", "istio", "canary"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "title": "Total Request Rate",
+        "type": "timeseries",
+        "gridPos": {"x": 0, "y": 0, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "sum(rate(istio_requests_total[1m]))",
+            "legendFormat": "Total Requests"
+          }
+        ]
+      },
+      {
+        "title": "Stable vs Canary Request Rate",
+        "type": "timeseries",
+        "gridPos": {"x": 12, "y": 0, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "sum by (destination_version) (rate(istio_requests_total[1m]))",
+            "legendFormat": "{{destination_version}}"
+          }
+        ]
+      },
+      {
+        "title": "Canary 5xx Error Rate",
+        "type": "timeseries",
+        "gridPos": {"x": 0, "y": 8, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "100 * sum(rate(istio_requests_total{destination_version=\"canary\",response_code=~\"5..\"}[1m])) / sum(rate(istio_requests_total{destination_version=\"canary\"}[1m]))",
+            "legendFormat": "Canary Error %"
+          }
+        ]
+      },
+      {
+        "title": "Stable 5xx Error Rate",
+        "type": "timeseries",
+        "gridPos": {"x": 12, "y": 8, "w": 12, "h": 8},
+        "targets": [
+          {
+            "expr": "100 * sum(rate(istio_requests_total{destination_version=\"stable\",response_code=~\"5..\"}[1m])) / sum(rate(istio_requests_total{destination_version=\"stable\"}[1m]))",
+            "legendFormat": "Stable Error %"
+          }
+        ]
+      }
+    ]
+  },
+  "overwrite": true
+}
